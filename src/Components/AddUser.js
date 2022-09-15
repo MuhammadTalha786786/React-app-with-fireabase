@@ -12,6 +12,8 @@ function AddUser() {
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
+          console.log(querySnapshot.exists(), 'doc');
+
           // doc.data() is never undefined for query doc snapshots
           if (doc !== null) {
             console.log('the record existed');
