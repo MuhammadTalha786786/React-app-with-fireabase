@@ -7,12 +7,15 @@ function AddUser() {
   const [age, setage] = useState('');
 
   const HandleSubmit = (e) => {
+    e.preventDefault();
     db.collection('users')
       .where('Email', '==', Email)
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
           console.log('doc');
+          console.log();
+          console.log(doc.id === true, ' => ', doc.data());
 
           // doc.data() is never undefined for query doc snapshots
           if (doc !== null) {
