@@ -5,49 +5,39 @@ function AddUser() {
   const [Email, setEmail] = useState('');
   const [Cellnumber, setCellnumber] = useState('');
   const [age, setage] = useState('');
-
-  const HandleSubmit = (e) => {
-    e.preventDefault();
+  const addUser = () => {
+    console.log('added user');
     db.collection('users')
-      .where('Email', '==', Email)
-      .get()
-      .then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          console.log('doc');
-          console.log();
-          console.log(doc.id === true, ' => ', doc.data());
-
-          // doc.data() is never undefined for query doc snapshots
-          if (doc !== null) {
-            console.log('the record existed');
-          } else {
-            db.collection('users')
-              .add({
-                name: name,
-                Email: Email,
-                Cellnumber: Cellnumber,
-                age: age,
-              })
-              .then(() => {
-                alert('User has been added successfully');
-                window.location.reload(false);
-              })
-              .catch((err) => {
-                alert(err);
-              });
-            setName();
-            setEmail();
-            setCellnumber();
-            setage();
-          }
-          // console.log(doc.id, " => ", doc.data());
-          // console.log("the user already exists")
-        });
+      .add({
+        name: name,
+        Email: Email,
+        Cellnumber: Cellnumber,
+        age: age,
       })
-      .catch(function (error) {
-        console.log('Error getting documents: ', error);
+      .then(() => {
+        alert('User has been added successfully');
+        window.location.reload(false);
+      })
+      .catch((err) => {
+        alert(err);
       });
-
+    setName();
+    setEmail();
+    setCellnumber();
+    setage();
+  };
+  const HandleSubmit = async (e) => {
+    e.preventDefault();
+    const emailExist = await db
+      .collection('users')
+      .where('Email', '==', Email)
+      .get();
+    console.log(emailExist.empty);
+    if (!emailExist.empty) {
+      alert('The Record Existed');
+    } else {
+      addUser();
+    }
     // e.preventDefault();
   };
   return (
