@@ -4,21 +4,22 @@ function AddUser() {
   const [name, setName] = useState('');
   const [Email, setEmail] = useState('');
   const [Cellnumber, setCellnumber] = useState('');
-  const [age, setage] = useState('');
+  const [age, setage] = useState('')
 
   const HandleSubmit = (e) => {
-    db.collection('users')
+   const query =  db.collection('users')
       .where('Email', '==', Email)
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
-          console.log(querySnapshot.exists(), 'doc');
+        });
+      })
+      .catch(function (error) {
+        console.log('Error getting documents: ', error);
+      });
 
-          // doc.data() is never undefined for query doc snapshots
-          if (doc !== null) {
-            console.log('the record existed');
-          } else {
-            db.collection('users')
+        if(query.empty){
+        db.collection('users')
               .add({
                 name: name,
                 Email: Email,
@@ -36,14 +37,10 @@ function AddUser() {
             setEmail();
             setCellnumber();
             setage();
-          }
-          // console.log(doc.id, " => ", doc.data());
-          // console.log("the user already exists")
-        });
-      })
-      .catch(function (error) {
-        console.log('Error getting documents: ', error);
-      });
+      }
+      else{
+        alert("This email is already registered..")
+      }
 
     // e.preventDefault();
   };
