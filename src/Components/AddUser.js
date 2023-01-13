@@ -4,44 +4,40 @@ function AddUser() {
   const [name, setName] = useState('');
   const [Email, setEmail] = useState('');
   const [Cellnumber, setCellnumber] = useState('');
-  const [age, setage] = useState('')
-
-  const HandleSubmit = (e) => {
-   const query =  db.collection('users')
-      .where('Email', '==', Email)
-      .get()
-      .then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-        });
+  const [age, setage] = useState('');
+  const addUser = () => {
+    console.log('added user');
+    db.collection('users')
+      .add({
+        name: name,
+        Email: Email,
+        Cellnumber: Cellnumber,
+        age: age,
       })
-      .catch(function (error) {
-        console.log('Error getting documents: ', error);
+      .then(() => {
+        alert('User has been added successfully');
+        window.location.reload(false);
+      })
+      .catch((err) => {
+        alert(err);
       });
-
-        if(query.empty){
-        db.collection('users')
-              .add({
-                name: name,
-                Email: Email,
-                Cellnumber: Cellnumber,
-                age: age,
-              })
-              .then(() => {
-                alert('User has been added successfully');
-                window.location.reload(false);
-              })
-              .catch((err) => {
-                alert(err);
-              });
-            setName();
-            setEmail();
-            setCellnumber();
-            setage();
-      }
-      else{
-        alert("This email is already registered..")
-      }
-
+    setName();
+    setEmail();
+    setCellnumber();
+    setage();
+  };
+  const HandleSubmit = async (e) => {
+    e.preventDefault();
+    const emailExist = await db
+      .collection('users')
+      .where('Email', '==', Email)
+      .get();
+    console.log(emailExist.empty);
+    if (!emailExist.empty) {
+      alert('The Record Existed');
+    } else {
+      addUser();
+    }
     // e.preventDefault();
   };
   return (
