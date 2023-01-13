@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import user from './user.png';
+// import user from './user.png';
 import '../App.css';
 
 function Header() {
@@ -11,13 +11,13 @@ function Header() {
         style={{ backgroundColor: '#041f20' }}
       >
         <div className='container-fluid'>
-          <img
+          {/* <img
             className=' rounded float-left img-responsive img-fluid'
             height='50px'
             width='50px'
             src={user}
             alt='new   '
-          />
+          /> */}
           <Link className='navbar-brand text-white' to='/'></Link>
           <div></div>
           <button
