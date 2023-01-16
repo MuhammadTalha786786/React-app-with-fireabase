@@ -1,12 +1,26 @@
 import React, { useState } from 'react';
-import { db } from './firebase';
+import { db } from '../Components/firebase';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import '../Styles/StyleGuide.css'
+
+
 function AddUser() {
   const [name, setName] = useState('');
   const [Email, setEmail] = useState('');
   const [Cellnumber, setCellnumber] = useState('');
   const [age, setage] = useState('');
+  const [open, setOpen] = React.useState(false);
+  // const handleClick = () => {
+  //   setOpen(true);
+  // };
+
+
+
+  const handleClose = (event) => {
+    setOpen(false);
+  };
   const addUser = () => {
-    console.log('added user');
     db.collection('users')
       .add({
         name: name,
@@ -15,8 +29,9 @@ function AddUser() {
         age: age,
       })
       .then(() => {
-        alert('User has been added successfully');
-        window.location.reload(false);
+        // alert('User has been added successfully');
+        // window.location.reload(false);
+        setOpen(true);
       })
       .catch((err) => {
         alert(err);
@@ -34,7 +49,7 @@ function AddUser() {
       .get();
     console.log(emailExist.empty);
     if (!emailExist.empty) {
-      alert('The Record Existed');
+      alert('The Email already existed');
     } else {
       addUser();
     }
@@ -42,10 +57,10 @@ function AddUser() {
   };
   return (
     <div className='container my-3'>
-      <h3 className='text-center text-primary'>Add User</h3>
+      <h3 className='text-center text-primary fontFamily'>Add User</h3>
       <form onSubmit={HandleSubmit}>
         <div className='mb-3'>
-          <label htmlFor='title' className='form-label'>
+          <label htmlFor='title' className='fontFamily form-label' >
             Name
           </label>
           <input
@@ -60,7 +75,7 @@ function AddUser() {
           />
         </div>
         <div className='mb-3'>
-          <label htmlFor='description' className='form-label'>
+          <label htmlFor='description' className='fontFamily form-label'>
             Email
           </label>
           <input
@@ -75,7 +90,7 @@ function AddUser() {
           />
         </div>
         <div className='mb-3'>
-          <label htmlFor='description' className='form-label'>
+          <label htmlFor='description' className='fontFamily form-label'>
             Cell Number
           </label>
           <input
@@ -90,7 +105,7 @@ function AddUser() {
           />
         </div>
         <div className='mb-3'>
-          <label htmlFor='description' className='form-label'>
+          <label htmlFor='description' className='fontFamily form-label'>
             Age
           </label>
           <input
@@ -105,6 +120,14 @@ function AddUser() {
               setage(e.target.value);
             }}
           />
+        </div>
+
+        <div>
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          This is a success message!
+        </Alert>
+      </Snackbar>
         </div>
 
         <div className='d-grid gap-2'>

@@ -1,9 +1,10 @@
 import './App.css';
 import Header from './Components/Header';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
-import AddUser from './Components/AddUser';
-import ViewUser from './Components/ViewUser';
+import AddUser from './Pages/AddUser';
+import ViewUser from './Pages/ViewUser';
 import { Link } from 'react-router-dom';
+import '../src/Styles/StyleGuide.css'
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
           render={() => {
             return (
               <>
-                <h1 className='heading shadow mt-5 p-3 mb-5 bg-info rounded'>
+                <h1 className='fontFamily heading shadow text-white    mt-5 p-3 mb-5 bg-info rounded'>
                   React JS App using Firebase
                 </h1>
                 <div class='my-3 bg-light'>

@@ -1,6 +1,8 @@
 import React from 'react';
-import { db } from './firebase';
-
+import { db } from '../Components/firebase';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import '../Styles/StyleGuide.css'
 class ViewUser extends React.Component {
   state = {
     users: null,
@@ -24,30 +26,37 @@ class ViewUser extends React.Component {
   render() {
     return (
       <>
-        <h3 className='text-center text-primary'>Added Users</h3>
+        <h3 className='text-center text-primary fontFamily'>Added Users</h3>
 
         <br />
 
         <div class='table-responsive-sm'>
-          <table class='table table-responsive table-hover table-bordered table-striped table-dark'>
+          <table class='table table-responsive table-hover table-bordered table-striped table-light'>
             <thead>
-              <tr>
-                <th scope='col'>Name</th>
+              <tr  className='fontFamily'>
+                <th scope='col' >Name</th>
                 <th scope='col'>Email</th>
                 <th scope='col'>Cell Number</th>
-                <th scope='col'>Age</th>
+                <th scope='col'>Ages</th>
+                <th scope='col'>Delete</th>
               </tr>
             </thead>
-
+      
             {this.state.users &&
               this.state.users.map((user) => {
                 return (
-                  <tbody>
+                  <tbody className='fontFamily'>
                     <tr>
                       <th>{user.name}</th>
                       <td>{user.Email}</td>
                       <td>{user.Cellnumber}</td>
                       <td>{user.age}</td>
+                      <td>
+                        {' '}
+                        <IconButton aria-label='delete'>
+                          <DeleteIcon />
+                        </IconButton>
+                      </td>
                     </tr>
                   </tbody>
                 );
