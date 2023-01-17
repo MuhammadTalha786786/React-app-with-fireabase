@@ -4,10 +4,15 @@ import './index.css';
 import App from './App';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import reportWebVitals from './reportWebVitals';
+import { Provider } from 'react-redux'
+import store from './Redux/Store/Store';
 
 ReactDOM.render(
   <>
-      <App />
+   <Provider store={store}>
+   <App />
+
+   </Provider>
   </>,
   document.getElementById('root')
 );

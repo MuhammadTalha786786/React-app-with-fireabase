@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { db } from '../../../Components/firebase';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import '../../../Styles/StyleGuide.css'
-
+import '../../../Styles/StyleGuide.css';
 
 function AddUser() {
   const [name, setName] = useState('');
@@ -14,8 +13,6 @@ function AddUser() {
   // const handleClick = () => {
   //   setOpen(true);
   // };
-
-
 
   const handleClose = (event) => {
     setOpen(false);
@@ -29,8 +26,6 @@ function AddUser() {
         age: age,
       })
       .then(() => {
-        // alert('User has been added successfully');
-        // window.location.reload(false);
         setOpen(true);
       })
       .catch((err) => {
@@ -60,7 +55,7 @@ function AddUser() {
       <h3 className='text-center text-primary fontFamily'>Add User</h3>
       <form onSubmit={HandleSubmit}>
         <div className='mb-3'>
-          <label htmlFor='title' className='fontFamily form-label' >
+          <label htmlFor='title' className='fontFamily form-label'>
             Name
           </label>
           <input
@@ -123,11 +118,15 @@ function AddUser() {
         </div>
 
         <div>
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-          This is a success message!
-        </Alert>
-      </Snackbar>
+          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert
+              onClose={handleClose}
+              severity='success'
+              sx={{ width: '100%' }}
+            >
+              This is a success message!
+            </Alert>
+          </Snackbar>
         </div>
 
         <div className='d-grid gap-2'>

@@ -14,24 +14,25 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import '../../../Styles/StyleGuide.css';
 import firebase from 'firebase';
-
-
-// ​import { getAuth,signInWithEmailAndPassword} from "firebase/auth";
-
-
-
-
-
-
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert'
+import { useDispatch, useSelector } from 'react-redux'
+import { setSignIn } from '../../../Redux/UserDetails/UserReducer';
+import { useNavigate } from 'react-router-dom';
 
 
 
 
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+    <Typography
+      variant='body2'
+      color='text.secondary'
+      align='center'
+      {...props}
+    >
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
+      <Link color='inherit' href='https://mui.com/'>
         Your Website
       </Link>{' '}
       {new Date().getFullYear()}
@@ -43,40 +44,49 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function Login() {
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [open, setOpen] = React.useState(false);
+  const [message, setMessage]=React.useState('')
+  const app =  useSelector((state) => state);
+  const navigate= useNavigate()
+  const dispatch = useDispatch()
 
-    const [email, setEmail]=React.useState('');
-    const [password, setPassword]=React.useState('');
-  const handleSubmit = async    (event) => {
+  const handleClose = (event) => {
+    setOpen(false);
+  };
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get('email'),
       password: data.get('password'),
     });
+    console.log('login.....loading');
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        dispatch(setSignIn({isLogin:true,isAdmin:true}))
+        console.log("i am here");
+        console.log(window.location);
+        navigate('/ViewUser', {replace:true})
 
+      })
+      .catch((error) => {
 
-    console.log("login.....loading")
-    firebase .auth(). signInWithEmailAndPassword( email, password)
-    .then((userCredential) => {
-    // Signed in 
-    console.log('user login ')
-    const user = userCredential.user;
-    // ...
-    })
-    .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    });
+        const errorMessage = error.message;
+        setMessage(errorMessage)
+        setOpen(true)
+      });
   };
 
-  const adminSignIn =()=>{
-   
-}
-
+  const adminSignIn = () => {};
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" >
+      <Container component='main'>
         <CssBaseline />
         <Box
           sx={{
@@ -86,47 +96,50 @@ export default function Login() {
             alignItems: 'center',
           }}
         >
-          <Avatar  sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
-          <h1  className='fontFamily'>
-            Sign in
-          </h1>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <h1 className='fontFamily'>Sign in</h1>
+          <Box
+            component='form'
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
             <TextField
-              margin="normal"
+              margin='normal'
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id='email'
+              label='Email Address'
+              name='email'
+              autoComplete='email'
               autoFocus
               value={email}
-              onChange={(x)=>{setEmail(x.target.value)   }}
-            
-
+              onChange={(x) => {
+                setEmail(x.target.value);
+              }}
             />
             <TextField
-              margin="normal"
+              margin='normal'
               required
               fullWidth
-              name="password"
-              label="Password"
-              type="password"
+              name='password'
+              label='Password'
+              type='password'
               value={password}
-                  id="password"
-                  onChange={(x)=>setPassword(x.target.value)}
-              autoComplete="current-password"
+              id='password'
+              onChange={(x) => setPassword(x.target.value)}
+              autoComplete='current-password'
             />
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+              control={<Checkbox value='remember' color='primary' />}
+              label='Remember me'
             />
             <Button
-              type="submit"
+              type='submit'
               fullWidth
-              variant="contained"
+              variant='contained'
               sx={{ mt: 3, mb: 2 }}
               onClick={adminSignIn}
             >
@@ -134,18 +147,30 @@ export default function Login() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href='#' variant='body2'>
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href='#' variant='body2'>
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
+
+        <div>
+          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert
+              onClose={handleClose}
+              severity='error'
+              sx={{ width: '100%' }}
+            >
+            {message}
+            </Alert>
+          </Snackbar>
+        </div>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>

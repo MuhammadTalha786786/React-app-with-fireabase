@@ -51,13 +51,13 @@ function Header() {
                 </Link>
               </li>
               <li className='nav-item'>
-                <Link className='nav-link text-white' to='/AddUser'>
-                  Add User
+                <Link className='nav-link text-white' to='/Login'>
+                  Admin Login
                 </Link>
               </li>
               <li className='nav-item'>
                 <Link className='nav-link text-white' to='/ViewUser'>
-                  View User
+                  User Login
                 </Link>
               </li>
             </ul>
