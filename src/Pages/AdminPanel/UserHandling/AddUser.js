@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { db } from '../Components/firebase';
+import { db } from '../../../Components/firebase';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import '../Styles/StyleGuide.css'
+import '../../../Styles/StyleGuide.css'
 
 
 function AddUser() {

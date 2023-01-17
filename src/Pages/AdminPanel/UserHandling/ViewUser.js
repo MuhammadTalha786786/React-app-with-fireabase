@@ -1,8 +1,8 @@
 import React from 'react';
-import { db } from '../Components/firebase';
+import { db } from '../../../Components/firebase';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-import '../Styles/StyleGuide.css'
+import '../../../Styles/StyleGuide.css'
 class ViewUser extends React.Component {
   state = {
     users: null,
