@@ -9,6 +9,7 @@ import Login from './Pages/AdminPanel/AdminLogin/Login';
 import './Styles/StyleGuide.css';
 import { useSelector } from 'react-redux';
 import Home from './Pages/Home';
+import UserLogin from './Pages/UserPanel/UserAuthentication/UserLogin';
 
 function App() {
   const appState = useSelector((state) => state);
@@ -25,6 +26,7 @@ function App() {
           
         />
         <Route path='/Login' element={<Login />} />
+        <Route path='/userlogin' element={<UserLogin />} />
 
         {isLogin ? (
           <Route exact path='/ViewUser' element={<ViewUser />} />

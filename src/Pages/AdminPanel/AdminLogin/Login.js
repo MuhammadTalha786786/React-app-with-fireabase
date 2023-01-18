@@ -15,13 +15,11 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import '../../../Styles/StyleGuide.css';
 import firebase from 'firebase';
 import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert'
-import { useDispatch, useSelector } from 'react-redux'
+import Alert from '@mui/material/Alert';
+import { useDispatch, useSelector } from 'react-redux';
 import { setSignIn } from '../../../Redux/UserDetails/UserReducer';
 import { useNavigate } from 'react-router-dom';
-
-
-
+import Input from '../../../Components/Input/Input';
 
 function Copyright(props) {
   return (
@@ -47,10 +45,10 @@ export default function Login() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [open, setOpen] = React.useState(false);
-  const [message, setMessage]=React.useState('')
-  const app =  useSelector((state) => state);
-  const navigate= useNavigate()
-  const dispatch = useDispatch()
+  const [message, setMessage] = React.useState('');
+  const app = useSelector((state) => state);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleClose = (event) => {
     setOpen(false);
@@ -67,18 +65,15 @@ export default function Login() {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
-        const user = userCredential.user;
-        dispatch(setSignIn({isLogin:true,isAdmin:true}))
-        console.log("i am here");
+        dispatch(setSignIn({ isLogin: true, isAdmin: true }));
+        console.log('i am here');
         console.log(window.location);
-        navigate('/ViewUser', {replace:true})
-
+        navigate('/ViewUser', { replace: true });
       })
       .catch((error) => {
-
         const errorMessage = error.message;
-        setMessage(errorMessage)
-        setOpen(true)
+        setMessage(errorMessage);
+        setOpen(true);
       });
   };
 
@@ -132,15 +127,24 @@ export default function Login() {
               onChange={(x) => setPassword(x.target.value)}
               autoComplete='current-password'
             />
+            <Input
+              value={email}
+              setValue={setEmail}
+              label='Filled'
+              variant='filled'
+              fullWidth
+              margin='normal'
+            />
             <FormControlLabel
               control={<Checkbox value='remember' color='primary' />}
               label='Remember me'
             />
+
             <Button
               type='submit'
               fullWidth
               variant='contained'
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 3, mb: 4 }}
               onClick={adminSignIn}
             >
               Sign In
@@ -167,7 +171,7 @@ export default function Login() {
               severity='error'
               sx={{ width: '100%' }}
             >
-            {message}
+              {message}
             </Alert>
           </Snackbar>
         </div>

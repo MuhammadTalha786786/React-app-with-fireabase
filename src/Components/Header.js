@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-// import user from './user.png';
+import logo from './logo.png';
 import '../App.css';
+import { useSelector } from 'react-redux';
 
 function Header() {
+  const appState = useSelector((state) => state.auth);
+
   return (
     <div>
       <nav
@@ -11,15 +14,15 @@ function Header() {
         style={{ backgroundColor: '#041f20' }}
       >
         <div className='container-fluid'>
-          {/* <img
-            className=' rounded float-left img-responsive img-fluid'
+          <img
+            className='rounded float-left img-responsive img-fluid'
             height='50px'
             width='50px'
-            src={user}
+            src={logo}
             alt='new   '
-          /> */}
+          />
+
           <Link className='navbar-brand text-white' to='/'></Link>
-          <div></div>
           <button
             style={{ backgroundColor: 'white' }}
             className='navbar-toggler'
@@ -50,15 +53,30 @@ function Header() {
                   Home
                 </Link>
               </li>
-              <li className='nav-item'>
-                <Link className='nav-link text-white' to='/Login'>
-                  Admin Login
-                </Link>
-              </li>
-              <li className='nav-item'>
-                <Link className='nav-link text-white' to='/ViewUser'>
-                  User Login
-                </Link>
+              {!appState.isLogin ? (
+                <>
+                  <li className='nav-item'>
+                    <Link className='nav-link text-white' to='/Login'>
+                      Admin Login
+                    </Link>
+                  </li>
+                  <li className='nav-item'>
+                    <Link className='nav-link text-white' to='/userlogin'>
+                      User Login
+                    </Link>
+                  </li>
+                </>
+              ) : null}
+
+              <li className='d-flex '>
+                {appState.isLogin && (  
+                  <div >
+                   
+                      <button color='inherit' onClick={() => {}}>
+                        Logout
+                      </button>
+                  </div>
+                )}
               </li>
             </ul>
           </div>
