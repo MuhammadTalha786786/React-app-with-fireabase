@@ -1,7 +1,12 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { StyleGuide } from '../Components/StyleGuide';
+import Button from '../Components/button/Button';
 
 const Home = () => {
+  const appState = useSelector((state) => state.auth);
+
   return (
     <>
       <h1 className='text-3xl font-bold underline text-center text-sky-500 mt-5'>
@@ -12,27 +17,33 @@ const Home = () => {
           <Link
             className='nav-link active text-white'
             aria-current='page'
-            to='/Login'
+            to={appState.isLogin ? '/ViewUser' : '/Login'}
           >
-            <button
+            <Button
+              text={appState.isLogin ? 'View User' : 'Admin Login'}
               type='button'
-              class=' button1 btn btn-primary btn-lg fontFamily'
-            >
-              Admin Login
-            </button>
+              style={{
+                backgroundColor: StyleGuide.color.color4,
+                color: StyleGuide.color.color5,
+              }}
+              class='button1 btn btn-lg fontFamily'
+            />
           </Link>
 
           <Link
             className='nav-link active text-white'
             aria-current='page'
-            to='/UserLogin'
+            to={appState.isLogin ? '/addUser' : '/UserLogin'}
           >
-            <button
+            <Button
+              text={appState.isLogin ? 'Add user' : 'User login'}
               type='button'
-              class=' button1 btn btn-secondary btn-lg fontFamily'
-            >
-              User Login
-            </button>
+              style={{
+                backgroundColor: StyleGuide.color.color1,
+                color: StyleGuide.color.color4,
+              }}
+              class=' button1 btn  btn-lg fontFamily'
+            />
           </Link>
         </div>
       </div>

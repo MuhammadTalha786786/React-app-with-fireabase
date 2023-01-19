@@ -1,83 +1,61 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import '../../../Styles/StyleGuide.css';
 import firebase from 'firebase';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setSignIn } from '../../../Redux/UserDetails/UserReducer';
 import { useNavigate } from 'react-router-dom';
 import Input from '../../../Components/Input/Input';
+import Button from '../../../Components/button/Button';
+import { StyleGuide } from '../../../Components/StyleGuide';
+import CircularProgress from '@mui/material/CircularProgress';
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant='body2'
-      color='text.secondary'
-      align='center'
-      {...props}
-    >
-      {'Copyright © '}
-      <Link color='inherit' href='https://mui.com/'>
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-const theme = createTheme();
 
 export default function Login() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState('');
-  const app = useSelector((state) => state);
+  const [loading, setLoading] = React.useState(false);
+  const theme = createTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleClose = (event) => {
+  const handleClose = () => {
     setOpen(false);
   };
   const handleSubmit = async (event) => {
+    setLoading(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get('email'),
       password: data.get('password'),
     });
-    console.log('login.....loading');
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
+        setLoading(true);
         dispatch(setSignIn({ isLogin: true, isAdmin: true }));
         console.log('i am here');
         console.log(window.location);
         navigate('/ViewUser', { replace: true });
       })
       .catch((error) => {
+        setLoading(false);
         const errorMessage = error.message;
         setMessage(errorMessage);
         setOpen(true);
       });
   };
-
-  const adminSignIn = () => {};
 
   return (
     <ThemeProvider theme={theme}>
@@ -91,76 +69,66 @@ export default function Login() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: 'primary.dark' }}>
             <LockOutlinedIcon />
           </Avatar>
-          <h1 className='fontFamily'>Sign in</h1>
+          <h1
+            className='fontFamily'
+            style={{ color: StyleGuide.color.primary }}
+          >
+            Admin Sign in
+          </h1>
           <Box
             component='form'
             onSubmit={handleSubmit}
             noValidate
             sx={{ mt: 1 }}
           >
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='email'
-              label='Email Address'
-              name='email'
-              autoComplete='email'
-              autoFocus
-              value={email}
-              onChange={(x) => {
-                setEmail(x.target.value);
-              }}
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              name='password'
-              label='Password'
-              type='password'
-              value={password}
-              id='password'
-              onChange={(x) => setPassword(x.target.value)}
-              autoComplete='current-password'
-            />
             <Input
               value={email}
               setValue={setEmail}
-              label='Filled'
-              variant='filled'
+              // label='Email'
+              variant='outlined'
               fullWidth
               margin='normal'
-            />
-            <FormControlLabel
-              control={<Checkbox value='remember' color='primary' />}
-              label='Remember me'
+              placeholder='Email'
             />
 
-            <Button
-              type='submit'
+            <Input
+              value={password}
+              setValue={setPassword}
+              // label='password'
+              variant='outlined'
+              name='password'
+              type='password'
               fullWidth
-              variant='contained'
-              sx={{ mt: 3, mb: 4 }}
-              onClick={adminSignIn}
-            >
-              Sign In
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href='#' variant='body2'>
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href='#' variant='body2'>
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
+              margin='normal'
+              placeholder='Password'
+            />
+            <div className='my-3'>
+              <Button
+                text={
+                  loading ? (
+                    <CircularProgress
+                      className='mt-2'
+                      style={{
+                        justifyContent: 'center',
+                        alignContent: 'center',
+                      }}
+                      size={20}
+                    />
+                  ) : (
+                    'Sign in'
+                  )
+                }
+                type='submit'
+                style={{
+                  backgroundColor: StyleGuide.color.color3,
+                  color: StyleGuide.color.color5,
+                }}
+                class='button1 btn btn-lg btn-block fontFamily'
+              />
+            </div>
           </Box>
         </Box>
 
@@ -175,7 +143,6 @@ export default function Login() {
             </Alert>
           </Snackbar>
         </div>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );
