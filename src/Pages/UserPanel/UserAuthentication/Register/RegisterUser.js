@@ -17,6 +17,9 @@ import Input from '../../../../Components/Input/Input';
 import Button from '../../../../Components/button/Button';
 import { StyleGuide } from '../../../../Components/StyleGuide';
 import CircularProgress from '@mui/material/CircularProgress';
+import firebase from 'firebase';
+import { v4 as uuidv4 } from 'uuid';
+
 
 const RegisterUser = () => {
   const [email, setEmail] = React.useState('');
@@ -24,12 +27,52 @@ const RegisterUser = () => {
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-  const [image, setImage] = React.useState('');
-  const [userNumber, setUserNumber]=React.useState('');
+  const [image, setImage] = React.useState();
+  const [userNumber, setUserNumber] = React.useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+
+
+  const onImageChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      setImage(URL.createObjectURL(event.target.files[0]));
+    }
+
+
+    onFirebaseUpload()
+
+
+
+   }
+
+
+   const onFirebaseUpload = async () =>{
+    const storage = firebase.storage();
+
+    // var storageRef = firebase.storage().ref;
+    // storageRef.put(image).a((snapshot) => {
+    //   console.log('Uploaded a blob or file!');
+    // });
+
+
+    console.log("calling")
+
+    // let fileName = `${uuidv4()}${image.substr(
+    //   image.lastIndexOf('.'),
+    // )}`;
+    const path = `/images/${image}`;
+    const ref = storage.ref(path);
+     await ref.put(image);
+     console.log('uploaded',".....")
+    const url = await ref.getDownloadURL();
+  
+   }
+
+
   const theme = createTheme();
-  console.log(image,"image")
+
+  console.log(image, 'image');
 
   const handleClose = (event) => {
     setOpen(false);
@@ -66,26 +109,26 @@ const RegisterUser = () => {
                 }}
               >
                 <Avatar
-                  alt='Remy Sharp'
+                  alt='User Avatar Image'
                   src={
-                    image != ''
-                      ? image
-                      : 'https://cdn.pixabay.com/photo/2017/02/23/13/05/avatar-2092113__340.png'
+                    image == undefined
+                      ? 'https://cdn.pixabay.com/photo/2017/02/23/13/05/avatar-2092113__340.png'
+                      : image
                   }
                   sx={{ width: 56, height: 56 }}
-
                 />
-                <p className='fontFamily '> { image == '' ?  'Please Choose Image': null}</p>
+                <p className='fontFamily '>
+                  {image == undefined ? 'Please Choose Image' : null}
+                </p>
+             
               </Box>
 
               <input
                 type='file'
-                accept='image/*'
-                variant='outlined'
+                // accept='image/*'
+                // variant='outlined'
                 fullWidth
-                value={image}
-                onChange={(x)=>{setImage(x.target.value)}}
-              />
+                onChange={onImageChange}              />
 
               <Input
                 value={email}
@@ -117,24 +160,23 @@ const RegisterUser = () => {
                 margin='normal'
                 placeholder='number'
                 maxLength={2}
-                InputProps={{ inputMode: 'numeric', maxLength: 12, pattern: '[0-9]*' }}
-        
+                InputProps={{
+                  inputMode: 'numeric',
+                  maxLength: 12,
+                  pattern: '[0-9]*',
+                }}
               />
-
-              
-              
-
 
               <div className='my-3'>
                 <Button
-                  text={loading ? <CircularProgress size={20} /> : 'Sign in'}
+                  text={loading ? <CircularProgress size={20} /> : 'Register'}
                   type='button'
-                  onClick={() => {}}
+                  onClick={onFirebaseUpload}
                   style={{
                     backgroundColor: StyleGuide.color.color3,
                     color: StyleGuide.color.color5,
                   }}
-                  class='button1 btn btn-lg btn-block fontFamily'
+                  class='button1 btn btn-lg btn-block fontFamily w-100'
                 />
               </div>
 
