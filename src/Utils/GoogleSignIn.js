@@ -6,6 +6,7 @@ import firebase from "firebase";
  const useGoogleSignIn =()=>{
 
   const SignIn = () =>{
+    console.log("called")
     var provider = new firebase.auth.GoogleAuthProvider();
 
     firebase.auth()

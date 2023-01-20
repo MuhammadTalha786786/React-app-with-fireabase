@@ -117,10 +117,8 @@ const RegisterUser = () => {
                 margin='normal'
                 placeholder='number'
                 maxLength={2}
-
-                InputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-              
-              
+                InputProps={{ inputMode: 'numeric', maxLength: 12, pattern: '[0-9]*' }}
+        
               />
 
               

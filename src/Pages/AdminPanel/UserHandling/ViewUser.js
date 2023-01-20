@@ -37,8 +37,8 @@ class ViewUser extends React.Component {
 
         <br />
 
-        <div class='table-responsive-lg mt-3'>
-          <table class='table table-responsive table-hover table-bordered table-striped table-light'>
+        <div class='table-responsive-lg mt-3 w-100'>
+          <table class='table table-responsive table-hover table-bordered table-striped table-light w-100'>
             <thead>
               <tr className='fontFamily'>
                 <th scope='col'>Name</th>

@@ -4,7 +4,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import '../../../Styles/StyleGuide.css';
@@ -21,7 +20,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { Link } from 'react-router-dom';
 import { Divider } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
-import useGoogleSignIn from '../../../Utils/GoogleSignIn';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import FacebookLogin from 'react-facebook-login';
+import './UserLogin.css';
+
 const UserLogin = () => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -31,8 +33,42 @@ const UserLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const theme = createTheme();
-  const { SignIn } = useGoogleSignIn();
 
+  const responseFacebook = (response) => {
+    console.log(response, 'facebook res....v');
+  };
+
+  const SignIn = () => {
+    var provider = new firebase.auth.GoogleAuthProvider();
+
+    firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then((result) => {
+        /** @type {firebase.auth.OAuthCredential} */
+        var credential = result.credential;
+        console.log(credential);
+
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = credential.accessToken;
+        console.log(token);
+        // The signed-in user info.
+        var user = result.user;
+        console.log(user);
+
+        // ...
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // ...
+      });
+  };
   const handleClose = (event) => {
     setOpen(false);
   };
@@ -90,7 +126,6 @@ const UserLogin = () => {
               margin='normal'
               placeholder='Email'
             />
-
             <Input
               value={password}
               setValue={setPassword}
@@ -109,19 +144,20 @@ const UserLogin = () => {
                   backgroundColor: StyleGuide.color.color3,
                   color: StyleGuide.color.color5,
                 }}
-                class='button1 btn btn-lg btn-block fontFamily'
+                class='button1 btn btn-lg btn-block fontFamily w-100'
               />
             </div>
-
             <Grid container>
               <Grid item xs>
                 <Link href='#' variant='body2'>
-                  <p  className='fontFamily extafont'>Forgot password?</p>
+                  <p className='fontFamily extafont'>Forgot password?</p>
                 </Link>
               </Grid>
               <Grid item>
                 <Link to='/registerUser' aria-current='page'>
-                <p  className='fontFamily extafont'>Don't have an account? Sign Up?</p>
+                  <p className='fontFamily extafont'>
+                    Don't have an account? Sign Up?
+                  </p>
                 </Link>
               </Grid>
             </Grid>
@@ -131,7 +167,7 @@ const UserLogin = () => {
             <Divider className='mt-4' />
             <Button
               text={'Sign In With Google'}
-              class='mt-4 button1 btn btn-lg btn-block fontFamily'
+              class='mt-4 button1 btn btn-lg btn-block fontFamily w-100'
               style={{
                 backgroundColor: '#FFA500',
                 color: StyleGuide.color.color4,
@@ -139,6 +175,19 @@ const UserLogin = () => {
               onClick={SignIn}
               icon={<GoogleIcon className='mr-3' />}
             />
+
+            <div  className='w-100'>
+              <FacebookLogin
+                appId='3554196954802152'
+                autoLoad={false}
+                callback={responseFacebook}
+                fields='name,email,picture'
+                cssClass='mt-4 button1 btn btn-lg btn-block btn-primary fontFamily w-100'
+                icon={<FacebookIcon  className='mr-3' />}               
+                textButton='Sign In with Facebook'
+              />
+            </div>
+        
           </Box>
         </Box>
 
