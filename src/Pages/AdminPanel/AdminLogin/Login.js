@@ -9,7 +9,7 @@ import '../../../Styles/StyleGuide.css';
 import firebase from 'firebase';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setSignIn } from '../../../Redux/UserDetails/UserReducer';
 import { useNavigate } from 'react-router-dom';
 import Input from '../../../Components/Input/Input';
@@ -27,6 +27,8 @@ export default function Login() {
   const theme = createTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const authentication=  useSelector((state)=>state);
+  console.log(authentication)
 
   const handleClose = () => {
     setOpen(false);
@@ -39,12 +41,14 @@ export default function Login() {
       email: data.get('email'),
       password: data.get('password'),
     });
+    
     firebase
+    
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
         setLoading(true);
-        dispatch(setSignIn({ isLogin: true, isAdmin: true }));
+        dispatch(setSignIn({ isLogin: true, isAdmin: true , userRole:'Admin'}));
         console.log('i am here');
         console.log(window.location);
         navigate('/ViewUser', { replace: true });

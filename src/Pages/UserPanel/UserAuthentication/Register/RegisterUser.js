@@ -1,8 +1,8 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
+import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Container from '@mui/material/Container';
@@ -11,15 +11,22 @@ import '../../../../Styles/StyleGuide.css';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { useDispatch } from 'react-redux';
-import { setSignIn } from '../../../../Redux/UserDetails/UserReducer';
 import { useNavigate } from 'react-router-dom';
 import Input from '../../../../Components/Input/Input';
 import Button from '../../../../Components/button/Button';
 import { StyleGuide } from '../../../../Components/StyleGuide';
 import CircularProgress from '@mui/material/CircularProgress';
 import firebase from 'firebase';
-import { v4 as uuidv4 } from 'uuid';
-
+import { v4 } from 'uuid';
+import { db } from '../../../../Components/firebase';
+import InputAdornment from '@mui/material/InputAdornment';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import EmailIcon from '@mui/icons-material/Email';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import IconButton from '@mui/material/IconButton';
+import PhoneIcon from '@mui/icons-material/Phone';
+import './Register.css';
 
 const RegisterUser = () => {
   const [email, setEmail] = React.useState('');
@@ -27,52 +34,80 @@ const RegisterUser = () => {
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-  const [image, setImage] = React.useState();
+  const [image, setImage] = React.useState(null);
   const [userNumber, setUserNumber] = React.useState('');
+  const [imageToUpload, setImageToUpload] = React.useState('');
+  const [userImage, setUserImage] = React.useState('');
+  const [name, setName] = React.useState('');
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [isErrorMessage, setIsErrorMesssage] = React.useState(false);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-
-
   const onImageChange = (event) => {
+    setImageToUpload(event.target.files[0]);
     if (event.target.files && event.target.files[0]) {
       setImage(URL.createObjectURL(event.target.files[0]));
     }
+    onFirebaseUpload();
+  };
 
+  const writeUserData = (id) => {
+    db.collection('users')
+      .doc(id)
+      .set({
+        email: email,
+        name: name,
+        userImage: userImage,
+        phoneNumber: userNumber,
+      })
+      .then((data) => {
+        setLoading(false);
+        console.log('data added', data);
+      });
+  };
 
-    onFirebaseUpload()
+  const RegiserUser = async () => {
+    if (image == null) {
+      setOpen(true);
+      setMessage('Choose your image!');
+    } else if (name == '') {
+      setOpen(true);
+      setMessage('Enter your name!');
+    } else if (email == '') {
+      setOpen(true);
+      setMessage('Enter your email!');
+    } else if (userNumber == '') {
+      setOpen(true);
+      setMessage('Enter your number!');
+    } else if (password == '') {
+      setOpen(true);
+      setMessage('Enter your password!');
+    } else {
+      setLoading(true);
+      onFirebaseUpload();
 
+      var userCreated = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password);
+      if (userCreated) {
+        writeUserData(userCreated.user.uid);
+      }
+    }
+  };
 
-
-   }
-
-
-   const onFirebaseUpload = async () =>{
+  const onFirebaseUpload = async () => {
     const storage = firebase.storage();
-
-    // var storageRef = firebase.storage().ref;
-    // storageRef.put(image).a((snapshot) => {
-    //   console.log('Uploaded a blob or file!');
-    // });
-
-
-    console.log("calling")
-
-    // let fileName = `${uuidv4()}${image.substr(
-    //   image.lastIndexOf('.'),
-    // )}`;
-    const path = `/images/${image}`;
+    console.log('calling');
+    const path = `/images/${imageToUpload.name + v4()}`;
     const ref = storage.ref(path);
-     await ref.put(image);
-     console.log('uploaded',".....")
+    await ref.put(imageToUpload);
+    console.log('uploaded', '.....');
     const url = await ref.getDownloadURL();
-  
-   }
-
-
+    setUserImage(url);
+  };
   const theme = createTheme();
-
-  console.log(image, 'image');
 
   const handleClose = (event) => {
     setOpen(false);
@@ -120,7 +155,6 @@ const RegisterUser = () => {
                 <p className='fontFamily '>
                   {image == undefined ? 'Please Choose Image' : null}
                 </p>
-             
               </Box>
 
               <input
@@ -128,7 +162,24 @@ const RegisterUser = () => {
                 // accept='image/*'
                 // variant='outlined'
                 fullWidth
-                onChange={onImageChange}              />
+                onChange={onImageChange}
+              />
+
+              <Input
+                value={name}
+                setValue={setName}
+                variant='outlined'
+                fullWidth
+                margin='normal'
+                placeholder='Enter your name'
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <AccountCircle />
+                    </InputAdornment>
+                  ),
+                }}
+              />
 
               <Input
                 value={email}
@@ -137,6 +188,13 @@ const RegisterUser = () => {
                 fullWidth
                 margin='normal'
                 placeholder='Email'
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <EmailIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
 
               <Input
@@ -144,10 +202,28 @@ const RegisterUser = () => {
                 setValue={setPassword}
                 variant='outlined'
                 name='password'
-                type='password'
+                type={showPassword ? 'text' : 'password'}
                 fullWidth
                 margin='normal'
                 placeholder='Password'
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton
+                        aria-label='toggle password visibility'
+                        onClick={() => {
+                          setShowPassword(!showPassword);
+                        }}
+                      >
+                        {showPassword ? (
+                          <VisibilityIcon />
+                        ) : (
+                          <VisibilityOffIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
 
               <Input
@@ -164,6 +240,11 @@ const RegisterUser = () => {
                   inputMode: 'numeric',
                   maxLength: 12,
                   pattern: '[0-9]*',
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <PhoneIcon />
+                    </InputAdornment>
+                  ),
                 }}
               />
 
@@ -171,7 +252,7 @@ const RegisterUser = () => {
                 <Button
                   text={loading ? <CircularProgress size={20} /> : 'Register'}
                   type='button'
-                  onClick={onFirebaseUpload}
+                  onClick={RegiserUser}
                   style={{
                     backgroundColor: StyleGuide.color.color3,
                     color: StyleGuide.color.color5,
@@ -183,12 +264,14 @@ const RegisterUser = () => {
               <Grid container>
                 <Grid item xs>
                   <Link href='#' variant='body2'>
-                    Forgot password?
+                    <p className='fontFamily extafont'>Forgot password?</p>
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href='#' variant='body2'>
-                    {"Don't have an account? Sign Up"}
+                  <Link to='/UserLogin'>
+                    <p className='fontFamily extafont'>
+                      Already have an account? Login Here
+                    </p>
                   </Link>
                 </Grid>
               </Grid>
@@ -199,7 +282,7 @@ const RegisterUser = () => {
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
               <Alert
                 onClose={handleClose}
-                severity='error'
+                severity={isErrorMessage ? 'success' : 'error'}
                 sx={{ width: '100%' }}
               >
                 {message}

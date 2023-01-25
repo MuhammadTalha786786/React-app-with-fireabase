@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import Home from './Pages/Home';
 import UserLogin from './Pages/UserPanel/UserAuthentication/UserLogin';
 import RegisterUser from './Pages/UserPanel/UserAuthentication/Register/RegisterUser';
+import UserHome from './Pages/UserPanel/Home/UserHome';
 
 function App() {
   const appState = useSelector((state) => state);
@@ -18,18 +19,11 @@ function App() {
     <Router basename={process.env.PUBLIC_URL}>
       <Header />
       <Routes>
-        <Route exact path={'/'} element={<Home />} />
         <Route path='/Login' element={<Login />} />
         <Route path='/userlogin' element={<UserLogin />} />
-
-        {isLogin ? (
-          <Route exact path='/ViewUser' element={<ViewUser />} />
-        ) : (
-          <Route path='/Login' element={<Login />} />
-        )}
-        <Route path='addUser' element={<AddUser />} />
+        {!isLogin && <Route exact path={'/'} element={<Home />} />}
         <Route path='registerUser' element={<RegisterUser />} />
-
+        {isLogin && <Route path='/userHome' element={<UserHome />} />}
       </Routes>
     </Router>
   );

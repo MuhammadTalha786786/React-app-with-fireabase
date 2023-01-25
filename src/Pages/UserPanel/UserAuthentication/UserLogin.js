@@ -10,7 +10,7 @@ import '../../../Styles/StyleGuide.css';
 import firebase from 'firebase';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setSignIn } from '../../../Redux/UserDetails/UserReducer';
 import { useNavigate } from 'react-router-dom';
 import Input from '../../../Components/Input/Input';
@@ -22,7 +22,8 @@ import { Divider } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import FacebookLogin from 'react-facebook-login';
-import './UserLogin.css';
+import { db } from '../../../Components/firebase';
+import { setUserInfo } from '../../../Redux/UserDetails/UserReducer';
 
 const UserLogin = () => {
   const [email, setEmail] = React.useState('');
@@ -30,12 +31,49 @@ const UserLogin = () => {
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const theme = createTheme();
+  let navigate = useNavigate();
+
+  const app = useSelector((state) => state);
+  console.log(app);
 
   const responseFacebook = (response) => {
+
+    const userData = {
+      email: response.email,
+      name: response.name,
+      phoneNumber: "",
+      userImage: response.picture.data.url,
+    };
+
+    dispatch(setUserInfo({ userInfo: userData }));
+    dispatch(
+      setSignIn({ userRole: 'user', isLogin: true, isAdmin: false })
+    );
+    navigate('/userHome');
+    window.location.reload();
     console.log(response, 'facebook res....v');
+  };
+
+  const updateLogin = (uid) => {
+    console.log('update login fun called');
+
+    db.collection('users')
+      .doc(uid)
+      .get()
+      .then((snapshot) => {
+        console.log(snapshot.data(), 'user data ');
+        dispatch(setUserInfo({ userInfo: snapshot.data() }));
+        dispatch(
+          setSignIn({ userRole: 'user', isLogin: true, isAdmin: false })
+        );
+        navigate('/userHome');
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const SignIn = () => {
@@ -47,14 +85,30 @@ const UserLogin = () => {
       .then((result) => {
         /** @type {firebase.auth.OAuthCredential} */
         var credential = result.credential;
-        console.log(credential);
-
+      
         // This gives you a Google Access Token. You can use it to access the Google API.
-        var token = credential.accessToken;
-        console.log(token);
+
         // The signed-in user info.
         var user = result.user;
         console.log(user);
+
+        if (user) {
+          const userData = {
+            email: user.email,
+            name: user.name,
+            phoneNumber: user.phoneNumber,
+            userImage: user.photoURL,
+          };
+
+          dispatch(setUserInfo({ userInfo: userData }));
+          dispatch(
+            setSignIn({ userRole: 'user', isLogin: true, isAdmin: false })
+          );
+          navigate('/userHome');
+          window.location.reload();
+        }
+
+        console.log(user.displayName, 'login user using google sign in...');
 
         // ...
       })
@@ -80,14 +134,19 @@ const UserLogin = () => {
       email: data.get('email'),
       password: data.get('password'),
     });
+
+    console.log(email);
     console.log('login.....loading');
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
-        setLoading(true);
-        dispatch(setSignIn({ isLogin: true, isAdmin: true }));
-        navigate('/ViewUser', { replace: true });
+        setLoading(false);
+        console.log(userCredential.user.uid);
+
+        updateLogin(userCredential.user.uid);
+        // dispatch(setSignIn({ isLogin: true, isAdmin: true }));
+        // navigate('/userHome', { replace: true });
       })
       .catch((error) => {
         setLoading(false);
@@ -117,7 +176,12 @@ const UserLogin = () => {
           >
             User Sign in
           </h1>
-          <Box component='form' onSubmit={() => {}} noValidate sx={{ mt: 1 }}>
+          <Box
+            component='form'
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
             <Input
               value={email}
               setValue={setEmail}
@@ -176,18 +240,17 @@ const UserLogin = () => {
               icon={<GoogleIcon className='mr-3' />}
             />
 
-            <div  className='w-100'>
+            <div className='w-100'>
               <FacebookLogin
                 appId='3554196954802152'
                 autoLoad={false}
                 callback={responseFacebook}
                 fields='name,email,picture'
                 cssClass='mt-4 button1 btn btn-lg btn-block btn-primary fontFamily w-100'
-                icon={<FacebookIcon  className='mr-3' />}               
+                icon={<FacebookIcon className='mr-3' />}
                 textButton='Sign In with Facebook'
               />
             </div>
-        
           </Box>
         </Box>
 

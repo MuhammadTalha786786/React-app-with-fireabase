@@ -55,9 +55,9 @@ class ViewUser extends React.Component {
                   <tbody className='fontFamily'>
                     <tr>
                       <th>{user.name}</th>
-                      <td>{user.Email}</td>
-                      <td>{user.Cellnumber}</td>
-                      <td>{user.age}</td>
+                      <td>{user.email}</td>
+                      <td>{user.phoneNumber}</td>
+                    
                       <td>
                         <IconButton aria-label='delete'>
                           <DeleteIcon />
