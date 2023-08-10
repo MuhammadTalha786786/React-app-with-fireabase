@@ -130,7 +130,7 @@ export default function Login() {
                   backgroundColor: StyleGuide.color.color3,
                   color: StyleGuide.color.color5,
                 }}
-                class='button1 btn btn-lg btn-block fontFamily w-100'
+                className='button1 btn btn-lg btn-block fontFamily w-100'
               />
             </div>
           </Box>

@@ -7,10 +7,10 @@ import '../src/Styles/StyleGuide.css';
 import Login from './Pages/AdminPanel/AdminLogin/Login';
 import './Styles/StyleGuide.css';
 import { useSelector } from 'react-redux';
-import Home from './Pages/Home';
-import UserLogin from './Pages/UserPanel/UserAuthentication/UserLogin';
+import UserLogin from './Pages/UserPanel/UserAuthentication/Login/UserLogin';
 import RegisterUser from './Pages/UserPanel/UserAuthentication/Register/RegisterUser';
 import UserHome from './Pages/UserPanel/Home/UserHome';
+import Landing from './Pages/UserPanel/Landing/Index';
 
 function App() {
   const appState = useSelector((state) => state);
@@ -21,7 +21,7 @@ function App() {
       <Routes>
         <Route path='/Login' element={<Login />} />
         <Route path='/userlogin' element={<UserLogin />} />
-        {!isLogin && <Route exact path={'/'} element={<Home />} />}
+        {!isLogin && <Route exact path={'/'} element={<Landing />} />}
         <Route path='registerUser' element={<RegisterUser />} />
         {isLogin && <Route path='/userHome' element={<UserHome />} />}
       </Routes>

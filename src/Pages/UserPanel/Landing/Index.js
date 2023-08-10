@@ -1,11 +1,16 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { StyleGuide } from '../Components/StyleGuide';
-import Button from '../Components/button/Button';
+// import { StyleGuide } from '../../../../../Components/StyleGuide';
+// import Button from '../../../../Components/button/Button';
+import useLanding from './useLanding';
+import { StyleGuide } from '../../../Components/StyleGuide';
+import Button from '../../../Components/button/Button';
 
-const Home = () => {
+const Landing = () => {
   const appState = useSelector((state) => state.auth);
+
+  const {} = useLanding()
 
   return (
     <>
@@ -37,4 +42,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Landing;

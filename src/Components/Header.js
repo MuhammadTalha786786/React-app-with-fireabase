@@ -11,6 +11,8 @@ function Header() {
   const appState = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
+  console.log(appState.userInfo.image, "appstate")
+
   return (
     <div>
       <nav
@@ -72,16 +74,16 @@ function Header() {
               {appState.isLogin && (
                 <div>
                   <div class='dropdown dropstart'>
-                    {/* <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-    Dropdown button
-  </button> */}
+                   
                     <img
-                      src={appState.userInfo.userImage}
+                      style={{width:60, height:60}}
+                      src={appState.userInfo.image}
                       alt='user image'
                       className='rounded-circle'
                       id='dropdownMenuButton1'
                       data-bs-toggle='dropdown'
                       aria-expanded='false'
+                      
                     />
 
                     <ul
