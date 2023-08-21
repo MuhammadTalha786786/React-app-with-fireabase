@@ -1,6 +1,9 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{html,js}"],
+  // You are missing this block that defines what files tailwind should scan for usage
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}"
+  ],
   theme: {
     extend: {},
   },
